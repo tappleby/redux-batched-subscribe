@@ -42,4 +42,18 @@ describe('batchedSubscribe()', () => {
 
     expect(baseStore.subscribe.callCount).to.equal(1);
   });
+
+  it('unsubscribes batch callbacks', () => {
+    const subscribeCallbackSpy = spy();
+    const baseStore = createStoreShape();
+    const createStore = () => baseStore;
+    const store = batchedSubscribe((cb) => cb())(createStore)();
+    const unsubscribe = store.subscribe(subscribeCallbackSpy);
+
+    unsubscribe();
+
+    store.dispatch({ type: 'foo' });
+
+    expect(subscribeCallbackSpy.callCount).to.equal(0);
+  });
 });
