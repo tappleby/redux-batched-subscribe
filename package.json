@@ -1,6 +1,6 @@
 {
   "name": "redux-batched-subscribe",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "higher order redux store which allows batching subscribe notifications.",
   "main": "lib/index.js",
   "scripts": {
@@ -17,6 +17,10 @@
   ],
   "author": "Terry Appleby <terry.appleby@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tappleby/redux-batched-subscribe.git"
+  },
   "bugs": {
     "url": "https://github.com/tappleby/redux-batched-subscribe/issues"
   },
