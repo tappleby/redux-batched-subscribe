@@ -37,6 +37,8 @@ import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 const store = batchedSubscribe(batchedUpdates)(createStore)(reducer, intialState);
 ```
 
+This store enhancer also exposes a `subscribeImmediate` method which allows for unbatched subscribe notifications.
+
 ## Thanks
 
 Thanks to [Andrew Clark](https://github.com/acdlite) for the clean library structure.
