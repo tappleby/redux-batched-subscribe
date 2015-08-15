@@ -56,4 +56,29 @@ describe('batchedSubscribe()', () => {
 
     expect(subscribeCallbackSpy.callCount).to.equal(0);
   });
+
+  it('should support removing a subscription within a subscription', () => {
+    const baseStore = createStoreShape();
+    const createStore = () => baseStore;
+    const store = batchedSubscribe((cb) => cb())(createStore)();
+
+    const listenerA = spy();
+    const listenerB = spy();
+    const listenerC = spy();
+
+    store.subscribe(listenerA);
+    const unSubB = store.subscribe(() => {
+      listenerB();
+      unSubB();
+    });
+    store.subscribe(listenerC);
+
+    store.dispatch({});
+    store.dispatch({});
+
+    expect(listenerA.callCount).to.equal(2);
+    expect(listenerB.callCount).to.equal(1);
+    expect(listenerC.callCount).to.equal(2);
+
+  });
 });

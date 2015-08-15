@@ -18,7 +18,7 @@ export function batchedSubscribe(batch) {
   }
 
   function notifyListenersBatched() {
-    batch(() => listeners.forEach(listener => listener()));
+    batch(() => listeners.slice().forEach(listener => listener()));
   }
 
   return next => (...args) => {
