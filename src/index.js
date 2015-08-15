@@ -1,10 +1,7 @@
-import invariant from 'invariant';
-
 export function batchedSubscribe(batch) {
-  invariant(
-    typeof batch === 'function',
-    'Expected batch to be a function.'
-  );
+  if (typeof batch !== 'function') {
+    throw new Error('Expected batch to be a function.');
+  }
 
   const listeners = [];
 

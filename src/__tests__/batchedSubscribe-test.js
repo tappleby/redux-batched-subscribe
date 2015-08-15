@@ -81,4 +81,18 @@ describe('batchedSubscribe()', () => {
     expect(listenerC.callCount).to.equal(2);
 
   });
+
+  it('should throw for invalid batch callback', () => {
+    expect(() => {
+      batchedSubscribe(null);
+    }).to.throw(Error);
+
+    expect(() => {
+      batchedSubscribe(undefined);
+    }).to.throw(Error);
+
+    expect(() => {
+      batchedSubscribe('foo');
+    }).to.throw(Error);
+  });
 });
