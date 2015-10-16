@@ -39,6 +39,23 @@ const store = batchedSubscribe(batchedUpdates)(createStore)(reducer, intialState
 
 This store enhancer also exposes a `subscribeImmediate` method which allows for unbatched subscribe notifications.
 
+### With Middlware
+
+When using batched updates with redux middleware, it must be added to the store first.
+
+```js
+import { batchedSubscribe } from 'redux-batched-subscribe';
+import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
+import thunkMiddleware from 'redux-thunk'; // example middlware
+
+const middleware = [thunkMiddleware];
+
+const createStoreWithBatchedUpdates = batchedSubscribe(batchedUpdates)(createStore);
+const createStoreWithMiddleware = applyMiddleware(...middleware)(createStoreWithBatchedUpdates);
+
+const store = createStoreWithMiddleware(reducer, initialState);
+```
+
 ## Thanks
 
 Thanks to [Andrew Clark](https://github.com/acdlite) for the clean library structure.
