@@ -12,32 +12,56 @@ npm install --save redux-batched-subscribe
 
 ## Usage
 
+The `batchedSubscribe` store enhancer accepts a function which is called after every dispatch with a `notify` callback as a single argument. Calling the `notify` callback will trigger all the subscription handlers, this gives you the ability to use various techniques to delay subscription notifications such as: debouncing, React batched updates or requestAnimationFrame.
+
+Since `batchedSubscribe` overloads the dispatch and subscribe handlers on the original redux store it is important that it gets applied before any other store enhancers or middleware that depend on these functions; The [compose](https://github.com/rackt/redux/blob/master/docs/api/compose.md) utility in redux can be used to handle this:
+
+```js
+import { createStore, applyMiddleware, compose } from 'redux';
+import { batchedSubscribe } from 'redux-batched-subscribe';
+
+const finalCreateStore = compose(
+  applyMiddleware(...middleware),
+  batchedSubscribe((notify) => {
+    notify();
+  })
+);
+```
+
+*Note: since `compose` applies functions from right to left, `batchedSubscribe` should appear at the end of the chain.*
+
+The store enhancer also exposes a `subscribeImmediate` method which allows for unbatched subscribe notifications.
+
+## Examples
+
 ### Debounced subscribe handlers:
 
 ```js
+import { createStore } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 import debounce from 'lodash.debounce';
 
 const batchDebounce = debounce(notify => notify());
-const store = batchedSubscribe(batchDebounce)(createStore)(reducer, intialState);
+const finalCreateStore = batchedSubscribe(batchDebounce)(createStore);
+const store = finalCreateStore(reducer, intialState);
 ```
 
 ### React batched updates
 
 ```js
+import { createStore } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 
 // React <= 0.13
 import { addons } from 'react/addons';
 const batchedUpdates = addons.batchedUpdates;
 
-// React 0.14-beta
+// React 0.14
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 
-const store = batchedSubscribe(batchedUpdates)(createStore)(reducer, intialState);
+const finalCreateStore = batchedSubscribe(batchedUpdates)(createStore)
+const store = finalCreateStore(reducer, intialState);
 ```
-
-This store enhancer also exposes a `subscribeImmediate` method which allows for unbatched subscribe notifications.
 
 ## Thanks
 
