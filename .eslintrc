@@ -1,19 +1,13 @@
 {
-  "extends": "eslint-config-airbnb",
+  "extends": "airbnb/base",
+  "ecmaFeatures": {
+    "experimentalObjectRestSpread": true
+  },
   "env": {
     "mocha": true,
-    "node": true
-  },
-  "globals": {
-    "expect": true
+    "es6": true
   },
   "rules": {
-    "padded-blocks": 0,
-    "no-use-before-define": [2, "nofunc"],
-    "no-unused-expressions": 0,
     "comma-dangle": 0
-  },
-  "plugins": [
-    "react"
-  ]
+  }
 }

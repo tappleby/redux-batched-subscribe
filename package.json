@@ -4,8 +4,11 @@
   "description": "redux store enhancer which allows batching subscribe notifications.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "make test",
-    "prepublish": "make clean build"
+    "clean": "rimraf lib",
+    "build": "babel src --out-dir lib",
+    "lint": "eslint src",
+    "test": "mocha --compilers js:babel/register --recursive src/**/*-test.js",
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
   },
   "keywords": [
     "redux",
@@ -28,13 +31,10 @@
   "devDependencies": {
     "babel": "^5.8.20",
     "babel-core": "^5.8.20",
-    "babel-eslint": "^4.0.5",
-    "chai": "^3.2.0",
     "eslint": "^1.0.0",
-    "eslint-config-airbnb": "0.0.7",
-    "eslint-plugin-react": "^3.1.0",
-    "jsdom": "^5.6.0",
+    "eslint-config-airbnb": "2.1.1",
+    "expect": "^1.13.4",
     "mocha": "^2.2.5",
-    "sinon": "^1.15.4"
+    "rimraf": "^2.5.0"
   }
 }
