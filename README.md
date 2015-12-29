@@ -4,7 +4,7 @@ redux-batched-subscribe
 [![build status](https://img.shields.io/travis/tappleby/redux-batched-subscribe/master.svg?style=flat-square)](https://travis-ci.org/tappleby/redux-batched-subscribe)
 [![npm version](https://img.shields.io/npm/v/redux-batched-subscribe.svg?style=flat-square)](https://www.npmjs.com/package/redux-batched-subscribe)
 
-Store enhancer for [redux](https://github.com/gaearon/redux) which allows batching of subscribe notifications that occur as a result of dispatches.
+Store enhancer for [redux](https://github.com/rackt/redux) which allows batching of subscribe notifications that occur as a result of dispatches.
 
 ```js
 npm install --save redux-batched-subscribe
