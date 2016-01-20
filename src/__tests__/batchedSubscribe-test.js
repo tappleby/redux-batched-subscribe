@@ -20,6 +20,18 @@ describe('batchedSubscribe()', () => {
     expect(batchSpy.calls.length).toEqual(1);
   });
 
+  it('it calls batch function with the action as second parameter', () => {
+    const batchSpy = createSpy();
+    const baseStore = createStoreShape();
+    const createStore = () => baseStore;
+    const store = batchedSubscribe(batchSpy)(createStore)();
+
+    const action = { type: 'foo' };
+    store.dispatch(action);
+
+    expect(batchSpy.calls[0].arguments[1]).toEqual(action);
+  });
+
   it('batch callback executes listeners', () => {
     const subscribeCallbackSpy = createSpy();
     const baseStore = createStoreShape();

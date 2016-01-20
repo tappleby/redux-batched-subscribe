@@ -46,6 +46,19 @@ const finalCreateStore = batchedSubscribe(batchDebounce)(createStore);
 const store = finalCreateStore(reducer, intialState);
 ```
 
+### Debounced subscribe handlers for specific action:
+
+```js
+import { createStore } from 'redux';
+import { batchedSubscribe } from 'redux-batched-subscribe';
+import debounce from 'lodash.debounce';
+
+const batchDebounce = debounce(notify => notify());
+const batchDebounceOnlyRegister = (notify, action) => action.type == 'REGISTER' ? batchDebounce(notify) : notify();
+const finalCreateStore = batchedSubscribe(dontBatchDebounceRegister)(createStore);
+const store = finalCreateStore(reducer, intialState);
+```
+
 ### React batched updates
 
 ```js
