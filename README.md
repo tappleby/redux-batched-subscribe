@@ -20,12 +20,15 @@ Since `batchedSubscribe` overloads the dispatch and subscribe handlers on the or
 import { createStore, applyMiddleware, compose } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 
-const finalCreateStore = compose(
+const enhancer = compose(
   applyMiddleware(...middleware),
   batchedSubscribe((notify) => {
     notify();
   })
-);
+)
+
+// Note: passing enhancer as the last argument to createStore requires redux@>=3.1.0
+const store = createStore(reducer, initialState, enhancer);
 ```
 
 *Note: since `compose` applies functions from right to left, `batchedSubscribe` should appear at the end of the chain.*
@@ -59,8 +62,8 @@ const batchedUpdates = addons.batchedUpdates;
 // React 0.14
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
 
-const finalCreateStore = batchedSubscribe(batchedUpdates)(createStore)
-const store = finalCreateStore(reducer, intialState);
+// Note: passing batchedSubscribe as the last argument to createStore requires redux@>=3.1.0
+const store = createStore(reducer, intialState, batchedSubscribe(batchedUpdates));
 ```
 
 ## Thanks
