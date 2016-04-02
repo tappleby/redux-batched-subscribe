@@ -8,12 +8,19 @@ function createStoreShape() {
   };
 }
 
+function createBatchedStore(batch = (cb) => cb()) {
+  const baseStore = createStoreShape();
+  const createStore = () => baseStore;
+  const batchedStore = batchedSubscribe(batch)(createStore)();
+  batchedStore.base = baseStore;
+
+  return batchedStore;
+}
+
 describe('batchedSubscribe()', () => {
   it('it calls batch function on dispatch', () => {
     const batchSpy = createSpy();
-    const baseStore = createStoreShape();
-    const createStore = () => baseStore;
-    const store = batchedSubscribe(batchSpy)(createStore)();
+    const store = createBatchedStore(batchSpy);
 
     store.dispatch({ type: 'foo' });
 
@@ -22,32 +29,25 @@ describe('batchedSubscribe()', () => {
 
   it('batch callback executes listeners', () => {
     const subscribeCallbackSpy = createSpy();
-    const baseStore = createStoreShape();
-    const createStore = () => baseStore;
-    const store = batchedSubscribe((cb) => cb())(createStore)();
+    const store = createBatchedStore();
 
     store.subscribe(subscribeCallbackSpy);
     store.dispatch({ type: 'foo' });
 
-    expect(baseStore.subscribe.calls.length).toEqual(0);
+    expect(store.base.subscribe.calls.length).toEqual(0);
     expect(subscribeCallbackSpy.calls.length).toEqual(1);
   });
 
   it('it exposes base subscribe as subscribeImmediate', () => {
-    const baseStore = createStoreShape();
-    const createStore = () => baseStore;
-    const store = batchedSubscribe((cb) => cb())(createStore)();
-
+    const store = createBatchedStore();
     store.subscribeImmediate();
 
-    expect(baseStore.subscribe.calls.length).toEqual(1);
+    expect(store.base.subscribe.calls.length).toEqual(1);
   });
 
   it('unsubscribes batch callbacks', () => {
     const subscribeCallbackSpy = createSpy();
-    const baseStore = createStoreShape();
-    const createStore = () => baseStore;
-    const store = batchedSubscribe((cb) => cb())(createStore)();
+    const store = createBatchedStore();
     const unsubscribe = store.subscribe(subscribeCallbackSpy);
 
     unsubscribe();
@@ -58,9 +58,7 @@ describe('batchedSubscribe()', () => {
   });
 
   it('should support removing a subscription within a subscription', () => {
-    const baseStore = createStoreShape();
-    const createStore = () => baseStore;
-    const store = batchedSubscribe((cb) => cb())(createStore)();
+    const store = createBatchedStore();
 
     const listenerA = createSpy();
     const listenerB = createSpy();
