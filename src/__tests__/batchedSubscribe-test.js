@@ -1,19 +1,17 @@
 import { batchedSubscribe } from '../';
 import expect from 'expect';
-
-function createStoreShape() {
-  return {
-    dispatch: expect.createSpy(),
-    subscribe: expect.createSpy()
-  };
-}
+import { createStore } from 'redux';
 
 function createBatchedStore(batch = (cb) => cb()) {
-  const baseStore = createStoreShape();
-  const createStore = () => baseStore;
-  const batchedStore = batchedSubscribe(batch)(createStore)();
-  batchedStore.base = baseStore;
+  const baseStore = createStore(() => ({}), {});
 
+  expect.spyOn(baseStore, 'dispatch').andCallThrough();
+  expect.spyOn(baseStore, 'subscribe').andCallThrough();
+
+  const createBaseStore = () => baseStore;
+  const batchedStore = batchedSubscribe(batch)(createBaseStore)();
+
+  batchedStore.base = baseStore;
   return batchedStore;
 }
 
@@ -33,14 +31,15 @@ describe('batchedSubscribe()', () => {
 
     store.subscribe(subscribeCallbackSpy);
     store.dispatch({ type: 'foo' });
+    store.dispatch({ type: 'foo' });
+    store.dispatch({ type: 'foo' });
 
-    expect(store.base.subscribe.calls.length).toEqual(0);
-    expect(subscribeCallbackSpy.calls.length).toEqual(1);
+    expect(subscribeCallbackSpy.calls.length).toEqual(3);
   });
 
   it('it exposes base subscribe as subscribeImmediate', () => {
     const store = createBatchedStore();
-    store.subscribeImmediate();
+    store.subscribeImmediate(() => {});
 
     expect(store.base.subscribe.calls.length).toEqual(1);
   });
@@ -71,8 +70,8 @@ describe('batchedSubscribe()', () => {
     });
     store.subscribe(listenerC);
 
-    store.dispatch({});
-    store.dispatch({});
+    store.dispatch({ type: 'foo' });
+    store.dispatch({ type: 'foo' });
 
     expect(listenerA.calls.length).toEqual(2);
     expect(listenerB.calls.length).toEqual(1);

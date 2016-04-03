@@ -35,6 +35,7 @@
     "eslint-config-airbnb": "2.1.1",
     "expect": "^1.13.4",
     "mocha": "^2.2.5",
+    "redux": "^3.3.1",
     "rimraf": "^2.5.0"
   }
 }
