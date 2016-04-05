@@ -14,8 +14,8 @@ export function batchedSubscribe(batch) {
     };
   }
 
-  function notifyListenersBatched() {
-    batch(() => listeners.slice().forEach(listener => listener()));
+  function notifyListenersBatched(...dispatchArgs) {
+    batch(() => listeners.slice().forEach(listener => listener()), ...dispatchArgs);
   }
 
   return next => (...args) => {
@@ -24,7 +24,7 @@ export function batchedSubscribe(batch) {
 
     function dispatch(...dispatchArgs) {
       const res = store.dispatch(...dispatchArgs);
-      notifyListenersBatched();
+      notifyListenersBatched(...dispatchArgs);
       return res;
     }
 
