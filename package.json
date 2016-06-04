@@ -3,6 +3,10 @@
   "version": "0.1.5",
   "description": "redux store enhancer which allows batching subscribe notifications.",
   "main": "lib/index.js",
+  "files": [
+    "lib",
+    "README.md"
+  ],
   "scripts": {
     "clean": "rimraf lib",
     "build": "babel src --out-dir lib",
