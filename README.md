@@ -44,9 +44,9 @@ import { createStore } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 import debounce from 'lodash.debounce';
 
-const batchDebounce = debounce(notify => notify());
-const finalCreateStore = batchedSubscribe(batchDebounce)(createStore);
-const store = finalCreateStore(reducer, intialState);
+const debounceNotify = debounce(notify => notify());
+// Note: passing batchedSubscribe as the last argument to createStore requires redux@>=3.1.0
+const store = createStore(reducer, intialState, batchedSubscribe(debounceNotify));
 ```
 
 ### React batched updates
