@@ -38,6 +38,48 @@ describe('batchedSubscribe()', () => {
     expect(subscribeCallbackSpy.calls.length).toEqual(1);
   });
 
+  it('should execute listeners once per batch', () => {
+    let execute;
+    const subscribeCallbackSpy = expect.createSpy();
+    const interactions = new Promise((resolve) => execute = resolve);
+    const store = createBatchedStore((cb) => interactions.then(cb));
+    store.subscribe(subscribeCallbackSpy);
+
+    store.dispatch({ type: 'foo' });
+    store.dispatch({ type: 'bar' });
+    expect(subscribeCallbackSpy.calls.length).toEqual(0);
+
+    execute();
+    return interactions
+      .then(() => expect(subscribeCallbackSpy.calls.length).toEqual(1));
+  })
+
+  it('should execute listeners again on nested dispatch', () => {
+    let execute;
+    const listener1 = expect.createSpy();
+    const listener2 = expect.createSpy();
+    const interactions = new Promise((resolve) => execute = resolve);
+    const store = createBatchedStore((cb) => interactions.then(cb));
+    const unsubscribe1 = store.subscribe(() => {
+      listener1();
+      unsubscribe1();
+      store.dispatch({ type: 'baz' });
+    })
+    store.subscribe(listener2);
+
+    store.dispatch({ type: 'foo' });
+    store.dispatch({ type: 'bar' });
+    expect(listener1.calls.length).toEqual(0);
+    expect(listener2.calls.length).toEqual(0);
+
+    execute();
+    return interactions
+      .then(() => {
+        expect(listener1.calls.length).toEqual(1);
+        expect(listener2.calls.length).toEqual(2);
+      })
+  })
+
   it('it exposes base subscribe as subscribeImmediate', () => {
     const store = createBatchedStore();
     store.subscribeImmediate();
