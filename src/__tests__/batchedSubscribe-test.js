@@ -52,7 +52,7 @@ describe('batchedSubscribe()', () => {
     execute();
     return interactions
       .then(() => expect(subscribeCallbackSpy.calls.length).toEqual(1));
-  })
+  });
 
   it('should execute listeners again on nested dispatch', () => {
     let execute;
@@ -64,7 +64,7 @@ describe('batchedSubscribe()', () => {
       listener1();
       unsubscribe1();
       store.dispatch({ type: 'baz' });
-    })
+    });
     store.subscribe(listener2);
 
     store.dispatch({ type: 'foo' });
@@ -77,8 +77,8 @@ describe('batchedSubscribe()', () => {
       .then(() => {
         expect(listener1.calls.length).toEqual(1);
         expect(listener2.calls.length).toEqual(2);
-      })
-  })
+      });
+  });
 
   it('it exposes base subscribe as subscribeImmediate', () => {
     const store = createBatchedStore();
