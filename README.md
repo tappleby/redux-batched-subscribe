@@ -49,6 +49,25 @@ const debounceNotify = debounce(notify => notify());
 const store = createStore(reducer, intialState, batchedSubscribe(debounceNotify));
 ```
 
+### Action based filtering for batch notifications
+
+```js
+import { createStore } from 'redux';
+import { batchedSubscribe } from 'redux-batched-subscribe';
+
+const shouldNotify = (action) => {
+  return !(action && action.meta && action.meta.batch);
+}
+
+const actionBatcher = (notify, action) => {
+  if(shouldNotify(action)) {
+    notify();
+  }
+}
+// Note: passing batchedSubscribe as the last argument to createStore requires redux@>=3.1.0
+const store = createStore(reducer, intialState, batchedSubscribe(actionBatcher));
+```
+
 ### React batched updates
 
 ```js
