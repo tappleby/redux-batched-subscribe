@@ -42,8 +42,8 @@ export function batchedSubscribe(batch) {
     }
   }
 
-  function notifyListenersBatched() {
-    batch(notifyListeners);
+  function notifyListenersBatched(...dispatchArgs) {
+    batch(notifyListeners, ...dispatchArgs);
   }
 
   return next => (...args) => {
@@ -52,7 +52,7 @@ export function batchedSubscribe(batch) {
 
     function dispatch(...dispatchArgs) {
       const res = store.dispatch(...dispatchArgs);
-      notifyListenersBatched();
+      notifyListenersBatched(...dispatchArgs);
       return res;
     }
 

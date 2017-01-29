@@ -18,13 +18,14 @@ function createBatchedStore(batch = (cb) => cb()) {
 }
 
 describe('batchedSubscribe()', () => {
-  it('it calls batch function on dispatch', () => {
+  it('it calls batch function on dispatch passing through given args.', () => {
     const batchSpy = expect.createSpy();
     const store = createBatchedStore(batchSpy);
 
     store.dispatch({ type: 'foo' });
 
     expect(batchSpy.calls.length).toEqual(1);
+    expect(batchSpy.calls[0].arguments[1]).toEqual({ type: 'foo' });
   });
 
   it('batch callback executes listeners', () => {
