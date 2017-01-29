@@ -55,15 +55,11 @@ const store = createStore(reducer, intialState, batchedSubscribe(debounceNotify)
 import { createStore } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 
-// React <= 0.13
-import { addons } from 'react/addons';
-const batchedUpdates = addons.batchedUpdates;
-
-// React 0.14
-import { unstable_batchedUpdates as batchedUpdates } from 'react-dom';
+// React >= 0.14
+import { unstable_batchedUpdates } from 'react-dom';
 
 // Note: passing batchedSubscribe as the last argument to createStore requires redux@>=3.1.0
-const store = createStore(reducer, intialState, batchedSubscribe(batchedUpdates));
+const store = createStore(reducer, intialState, batchedSubscribe(unstable_batchedUpdates));
 ```
 
 ## Thanks
