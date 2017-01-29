@@ -3,6 +3,7 @@ export function batchedSubscribe(batch) {
     throw new Error('Expected batch to be a function.');
   }
 
+  let dispatched = false;
   let currentListeners = [];
   let nextListeners = currentListeners;
 
@@ -36,6 +37,10 @@ export function batchedSubscribe(batch) {
   }
 
   function notifyListeners() {
+    if (!dispatched) {
+      return;
+    }
+    dispatched = false;
     const listeners = currentListeners = nextListeners;
     for (let i = 0; i < listeners.length; i++) {
       listeners[i]();
@@ -52,6 +57,7 @@ export function batchedSubscribe(batch) {
 
     function dispatch(...dispatchArgs) {
       const res = store.dispatch(...dispatchArgs);
+      dispatched = true;
       notifyListenersBatched();
       return res;
     }
