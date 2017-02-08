@@ -21,10 +21,10 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { batchedSubscribe } from 'redux-batched-subscribe';
 
 const enhancer = compose(
-  applyMiddleware(...middleware),
   batchedSubscribe((notify) => {
     notify();
-  })
+  }),
+  applyMiddleware(...middleware)
 )
 
 // Note: passing enhancer as the last argument to createStore requires redux@>=3.1.0
