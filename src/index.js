@@ -1,7 +1,11 @@
-export function batchedSubscribe(batch) {
-  if (typeof batch !== 'function') {
-    throw new Error('Expected batch to be a function.');
+const validateAsFunction = (func,name)=>{
+  if (typeof func !== 'function') {
+    throw new Error(`Expected ${name || 'argument'} to be a function.`);
   }
+}
+
+export function batchedSubscribe(batch) {
+  validateAsFunction(batch,"batch");
 
   let currentListeners = [];
   let nextListeners = currentListeners;
@@ -13,9 +17,7 @@ export function batchedSubscribe(batch) {
   }
 
   function subscribe(listener) {
-    if (typeof listener !== 'function') {
-      throw new Error('Expected listener to be a function.');
-    }
+    validateAsFunction(listener,"listener");
 
     let isSubscribed = true;
 
