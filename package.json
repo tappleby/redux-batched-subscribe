@@ -13,7 +13,8 @@
     "build": "babel src --out-dir lib && cp src/index.d.ts lib",
     "lint": "eslint src",
     "test": "mocha --compilers js:babel/register --recursive src/**/*-test.js",
-    "prepublish": "npm run clean && npm run lint && npm run test && npm run build"
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run build",
+    "prepare": "npm run build"
   },
   "keywords": [
     "redux",
