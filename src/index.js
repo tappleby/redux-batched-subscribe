@@ -1,4 +1,4 @@
-export function batchedSubscribe(batch) {
+export function batchedSubscribe(batch, blacklist) {
   if (typeof batch !== 'function') {
     throw new Error('Expected batch to be a function.');
   }
@@ -51,8 +51,14 @@ export function batchedSubscribe(batch) {
     const subscribeImmediate = store.subscribe;
 
     function dispatch(...dispatchArgs) {
+      const [ action ] = dispatchArgs;
+      const { type } = action;
       const res = store.dispatch(...dispatchArgs);
-      notifyListenersBatched();
+      if (blacklist.include(type)) {
+        notifyListeners();
+      } else {
+        notifyListenersBatched();
+      }
       return res;
     }
 
