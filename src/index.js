@@ -51,7 +51,7 @@ export function batchedSubscribe(batch, blacklist) {
     const subscribeImmediate = store.subscribe;
 
     function dispatch(...dispatchArgs) {
-      const [ action ] = dispatchArgs;
+      const [action] = dispatchArgs;
       const { type } = action;
       const res = store.dispatch(...dispatchArgs);
       if (blacklist.include(type)) {
